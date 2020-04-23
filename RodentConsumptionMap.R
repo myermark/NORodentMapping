@@ -52,6 +52,10 @@ parks <- read.csv("./Bait Records/parks_040220.csv")
 ware <- read.csv("./Bait Records/ware_040220.csv")
 oak <- read.csv("./Bait Records/oak_040820.csv")
 
+#Get cumulative consumption data -- number of times bait hit per site
+fq <- fq %>%
+  mutate(numHits = rowSums((select(fq, 4:6) > 0)))
+
 #Map the consumption data
 #Visualize using ggmaps
 #Get the French Quarter bounding box
@@ -68,16 +72,32 @@ newwidth = borders[4] - borders[3]
 nola_stamen <- get_stamenmap(bbox = borders, zoom = 16, maptype = "terrain")
 map <- ggmap(nola_stamen)
 
-tiff(filename = "./Maps/FQ_Cons_041420.tiff", height = 8, width = 9, units = "in", res = 120, compression = "lzw", type = "cairo")
-map + geom_point(data = filter(fq, Con_4720 >0), pch=19, col="red", alpha = 0.5, stroke = 1, aes(x=Long, y= Lat, size = Con_4720))  + 
+#Percent consumption
+tiff(filename = "./Maps/FQ_Cons_042020.tiff", height = 8, width = 9, units = "in", res = 120, compression = "lzw", type = "cairo")
+map + geom_point(data = filter(fq, Con_42020 >0), pch=19, col="red", alpha = 0.5, stroke = 1, aes(x=Long, y= Lat, size = Con_42020))  + 
   geom_point(data = fq, pch = 20, col ="black", size = 0.6, aes(x=Long, y=Lat)) +
   scale_size_continuous(limits = c(5, max(fq$Con_4720, na.rm=T))) +
   guides() +
   labs(x = "Longitude", y = "Latitude", size = "Consumption %") + 
-  ggtitle("FQ Bait Consumption 4/14/2020") +
+  ggtitle("FQ Bait Consumption 4/20/2020") +
   theme(axis.title.x = element_text(color = "black", size = 14, face = "bold"),
         axis.title.y = element_text(color = "black", size = 14, face = "bold"), 
         plot.title = element_text(size=20, face = "bold"))
+dev.off()
+
+#Cumulative consumption - number of hits
+tiff(filename = "./Maps/FQ_Cumulative_042020.tiff", height = 8, width = 9, units = "in", res = 120, compression = "lzw", type = "cairo")
+map + geom_point(data = filter(fq[order(fq$numHits),], numHits >0), pch=19, size = 6, alpha = 0.5, stroke = 1, aes(x=Long, y= Lat, col = factor(numHits, levels = c(1,2,3))))  + 
+  geom_point(data = fq, pch = 20, col ="black", size = 0.6, aes(x=Long, y=Lat)) +
+  scale_colour_manual(values = c("green", "yellow", "red")) +
+  guides() +
+  labs(x = "Longitude", y = "Latitude", colour = "Consecutive Weeks\nBait Consumption") + 
+  ggtitle("French Quarter Rodent Surveillance 4/20/20") +
+  theme(axis.title.x = element_text(color = "black", size = 14, face = "bold"),
+        axis.title.y = element_text(color = "black", size = 14, face = "bold"), 
+        plot.title = element_text(size=20, face = "bold"),
+        legend.background=element_blank(),
+        legend.key=element_rect(fill="white"))
 dev.off()
 
 #Get the Warehouse District/CBD bounding box
