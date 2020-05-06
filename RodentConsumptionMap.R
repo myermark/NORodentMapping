@@ -54,7 +54,13 @@ oak <- read.csv("./Bait Records/oak_040820.csv")
 
 #Get cumulative consumption data -- number of times bait hit per site
 fq <- fq %>%
-  mutate(numHits = rowSums((select(fq, 4:6) > 0)))
+  mutate(numHits = rowSums((select(fq, 4:ncol(fq)) > 0)))
+oak <- oak %>%
+  mutate(numHits = rowSums((select(oak, 4:ncol(oak)) > 0)))
+parks <- parks %>%
+  mutate(numHits = rowSums((select(parks, 4:ncol(parks)) > 0)))
+ware <- ware %>%
+  mutate(numHits = rowSums((select(ware, 4:ncol(ware)) > 0)))
 
 #Map the consumption data
 #Visualize using ggmaps
@@ -73,26 +79,26 @@ nola_stamen <- get_stamenmap(bbox = borders, zoom = 16, maptype = "terrain")
 map <- ggmap(nola_stamen)
 
 #Percent consumption
-tiff(filename = "./Maps/FQ_Cons_042020.tiff", height = 8, width = 9, units = "in", res = 120, compression = "lzw", type = "cairo")
-map + geom_point(data = filter(fq, Con_42020 >0), pch=19, col="red", alpha = 0.5, stroke = 1, aes(x=Long, y= Lat, size = Con_42020))  + 
+tiff(filename = "./Maps/FQ_Cons_050420.tiff", height = 8, width = 9, units = "in", res = 120, compression = "lzw", type = "cairo")
+map + geom_point(data = filter(fq, Con_50420 >0), pch=19, col="red", alpha = 0.5, stroke = 1, aes(x=Long, y= Lat, size = Con_50420))  + 
   geom_point(data = fq, pch = 20, col ="black", size = 0.6, aes(x=Long, y=Lat)) +
-  scale_size_continuous(limits = c(5, max(fq$Con_4720, na.rm=T))) +
+  scale_size_continuous(limits = c(5, max(fq$Con_50420, na.rm=T))) +
   guides() +
   labs(x = "Longitude", y = "Latitude", size = "Consumption %") + 
-  ggtitle("FQ Bait Consumption 4/20/2020") +
+  ggtitle("FQ Bait Consumption 5/04/2020") +
   theme(axis.title.x = element_text(color = "black", size = 14, face = "bold"),
         axis.title.y = element_text(color = "black", size = 14, face = "bold"), 
         plot.title = element_text(size=20, face = "bold"))
 dev.off()
 
 #Cumulative consumption - number of hits
-tiff(filename = "./Maps/FQ_Cumulative_042020.tiff", height = 8, width = 9, units = "in", res = 120, compression = "lzw", type = "cairo")
-map + geom_point(data = filter(fq[order(fq$numHits),], numHits >0), pch=19, size = 6, alpha = 0.5, stroke = 1, aes(x=Long, y= Lat, col = factor(numHits, levels = c(1,2,3))))  + 
+tiff(filename = "./Maps/FQ_Cumulative_050420.tiff", height = 8, width = 9, units = "in", res = 120, compression = "lzw", type = "cairo")
+map + geom_point(data = filter(fq[order(fq$numHits),], numHits >0), pch=19, size = 6, alpha = 0.5, stroke = 1, aes(x=Long, y= Lat, col = factor(numHits, levels = c(1,2,3,4))))  + 
   geom_point(data = fq, pch = 20, col ="black", size = 0.6, aes(x=Long, y=Lat)) +
-  scale_colour_manual(values = c("green", "yellow", "red")) +
+  scale_colour_manual(values = c("green", "yellow", "orange", "red")) +
   guides() +
-  labs(x = "Longitude", y = "Latitude", colour = "Consecutive Weeks\nBait Consumption") + 
-  ggtitle("French Quarter Rodent Surveillance 4/20/20") +
+  labs(x = "Longitude", y = "Latitude", colour = "Cumulative Weeks\nBait Consumption") + 
+  ggtitle("French Quarter Rodent Surveillance 5/04/20") +
   theme(axis.title.x = element_text(color = "black", size = 14, face = "bold"),
         axis.title.y = element_text(color = "black", size = 14, face = "bold"), 
         plot.title = element_text(size=20, face = "bold"),
@@ -114,16 +120,31 @@ newwidth = borders[4] - borders[3]
 nola_stamen <- get_stamenmap(bbox = borders, zoom = 16, maptype = "terrain")
 map <- ggmap(nola_stamen)
 
-tiff(filename = "./Maps/Ware_Cons_041620.tiff", height = 8, width = 9, units = "in", res = 120, compression = "lzw", type = "cairo")
-map + geom_point(data = filter(ware, Con_41620 > 0), pch=19, col="red", alpha = 0.5, stroke = 1, aes(x=Long, y= Lat, size = Con_41620))  + 
+tiff(filename = "./Maps/Ware_Cons_050120.tiff", height = 8, width = 9, units = "in", res = 120, compression = "lzw", type = "cairo")
+map + geom_point(data = filter(ware, Con_50120 > 0), pch=19, col="red", alpha = 0.5, stroke = 1, aes(x=Long, y= Lat, size = Con_50120))  + 
   geom_point(data = ware, pch = 20, col ="black", size = 0.6, aes(x=Long, y=Lat)) +
-  scale_size_continuous(limits = c(5, max(ware$Con_41620, na.rm=T))) +
+  scale_size_continuous(limits = c(5, max(ware$Con_50120, na.rm=T))) +
   guides() +
   labs(x = "Longitude", y = "Latitude", size = "Consumption %") + 
-  ggtitle("Warehouse/CBD Bait Consumption 4/16/2020") +
+  ggtitle("Warehouse/CBD Bait Consumption 5/01/2020") +
   theme(axis.title.x = element_text(color = "black", size = 14, face = "bold"),
         axis.title.y = element_text(color = "black", size = 14, face = "bold"), 
         plot.title = element_text(size=20, face = "bold"))
+dev.off()
+
+#Cumulative consumption - number of hits
+tiff(filename = "./Maps/Ware_Cumulative_050120.tiff", height = 8, width = 9, units = "in", res = 120, compression = "lzw", type = "cairo")
+map + geom_point(data = filter(ware[order(ware$numHits),], numHits >0), pch=19, size = 6, alpha = 0.5, stroke = 1, aes(x=Long, y= Lat, col = factor(numHits, levels = c(1,2))))  + 
+  geom_point(data = ware, pch = 20, col ="black", size = 0.6, aes(x=Long, y=Lat)) +
+  scale_colour_manual(values = c("green", "yellow")) +
+  guides() +
+  labs(x = "Longitude", y = "Latitude", colour = "Cumulative Weeks\nBait Consumption") + 
+  ggtitle("Warehouse/CBD Rodent Surveillance 5/01/20") +
+  theme(axis.title.x = element_text(color = "black", size = 14, face = "bold"),
+        axis.title.y = element_text(color = "black", size = 14, face = "bold"), 
+        plot.title = element_text(size=20, face = "bold"),
+        legend.background=element_blank(),
+        legend.key=element_rect(fill="white"))
 dev.off()
 
 #Get the Oak Street bounding box
@@ -140,16 +161,31 @@ newwidth = borders[4] - borders[3]
 nola_stamen <- get_stamenmap(bbox = borders, zoom = 16, maptype = "terrain")
 map <- ggmap(nola_stamen)
 
-tiff(filename = "./Maps/Oak_Cons_041520.tiff", height = 8, width = 9, units = "in", res = 120, compression = "lzw", type = "cairo")
-map + geom_point(data = filter(oak, Con_41520 > 0), pch=19, col="red", alpha = 0.5, stroke = 1, aes(x=Long, y= Lat, size = Con_41520))  + 
+tiff(filename = "./Maps/Oak_Cons_043020.tiff", height = 8, width = 9, units = "in", res = 120, compression = "lzw", type = "cairo")
+map + geom_point(data = filter(oak, Con_43020 > 0), pch=19, col="red", alpha = 0.5, stroke = 1, aes(x=Long, y= Lat, size = Con_43020))  + 
   geom_point(data = oak, pch = 20, col ="black", size = 0.6, aes(x=Long, y=Lat)) +
   scale_size_continuous(limits = c(5, max(oak$Con_41520, na.rm=T))) +
   guides() +
   labs(x = "Longitude", y = "Latitude", size = "Consumption %") + 
-  ggtitle("Oak St Bait Consumption 4/15/2020") +
+  ggtitle("Oak St Bait Consumption 4/30/2020") +
   theme(axis.title.x = element_text(color = "black", size = 14, face = "bold"),
         axis.title.y = element_text(color = "black", size = 14, face = "bold"), 
         plot.title = element_text(size=20, face = "bold"))
+dev.off()
+
+#Cumulative consumption - number of hits
+tiff(filename = "./Maps/Oak_Cumulative_043020.tiff", height = 8, width = 9, units = "in", res = 120, compression = "lzw", type = "cairo")
+map + geom_point(data = filter(oak[order(oak$numHits),], numHits >0), pch=19, size = 6, alpha = 0.5, stroke = 1, aes(x=Long, y= Lat, col = factor(numHits, levels = c(1,2))))  + 
+  geom_point(data = oak, pch = 20, col ="black", size = 0.6, aes(x=Long, y=Lat)) +
+  scale_colour_manual(values = c("green", "yellow")) +
+  guides() +
+  labs(x = "Longitude", y = "Latitude", colour = "Cumulative Weeks\nBait Consumption") + 
+  ggtitle("Oak St Rodent Surveillance 4/30/20") +
+  theme(axis.title.x = element_text(color = "black", size = 14, face = "bold"),
+        axis.title.y = element_text(color = "black", size = 14, face = "bold"), 
+        plot.title = element_text(size=20, face = "bold"),
+        legend.background=element_blank(),
+        legend.key=element_rect(fill="white"))
 dev.off()
 
 #Get the CBD Hotspots bounding box
@@ -166,14 +202,29 @@ newwidth = borders[4] - borders[3]
 nola_stamen <- get_stamenmap(bbox = borders, zoom = 16, maptype = "terrain")
 map <- ggmap(nola_stamen)
 
-tiff(filename = "./Maps/CBDHotspots_Cons_041520.tiff", height = 8, width = 9, units = "in", res = 120, compression = "lzw", type = "cairo")
-map + geom_point(data = filter(parks, Con_41520 > 0), pch=19, col="red", alpha = 0.5, stroke = 1, aes(x=Long, y= Lat, size = Con_41520))  + 
+tiff(filename = "./Maps/CBDHotspots_Cons_050120.tiff", height = 8, width = 9, units = "in", res = 120, compression = "lzw", type = "cairo")
+map + geom_point(data = filter(parks, Con_50120 > 0), pch=19, col="red", alpha = 0.5, stroke = 1, aes(x=Long, y= Lat, size = Con_50120))  + 
   geom_point(data = parks, pch = 20, col ="black", size = 0.6, aes(x=Long, y=Lat)) +
-  scale_size_continuous(limits = c(5, max(parks$Con_41520, na.rm=T))) +
+  scale_size_continuous(limits = c(5, max(parks$Con_50120, na.rm=T))) +
   guides() +
   labs(x = "Longitude", y = "Latitude", size = "Consumption %") + 
-  ggtitle("CBD Hotspots Consumption 4/15/2020") +
+  ggtitle("CBD Hotspots Consumption 5/01/2020") +
   theme(axis.title.x = element_text(color = "black", size = 14, face = "bold"),
         axis.title.y = element_text(color = "black", size = 14, face = "bold"), 
         plot.title = element_text(size=20, face = "bold"))
+dev.off()
+
+#Cumulative consumption - number of hits
+tiff(filename = "./Maps/CBD_Cumulative_050120.tiff", height = 8, width = 9, units = "in", res = 120, compression = "lzw", type = "cairo")
+map + geom_point(data = filter(parks[order(parks$numHits),], numHits >0), pch=19, size = 6, alpha = 0.5, stroke = 1, aes(x=Long, y= Lat, col = factor(numHits, levels = c(1,2))))  + 
+  geom_point(data = parks, pch = 20, col ="black", size = 0.6, aes(x=Long, y=Lat)) +
+  scale_colour_manual(values = c("green", "yellow")) +
+  guides() +
+  labs(x = "Longitude", y = "Latitude", colour = "Cumulative Weeks\nBait Consumption") + 
+  ggtitle("CBD Hotspots Rodent Surveillance 5/01/20") +
+  theme(axis.title.x = element_text(color = "black", size = 14, face = "bold"),
+        axis.title.y = element_text(color = "black", size = 14, face = "bold"), 
+        plot.title = element_text(size=20, face = "bold"),
+        legend.background=element_blank(),
+        legend.key=element_rect(fill="white"))
 dev.off()
