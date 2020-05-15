@@ -2,8 +2,11 @@
 .Rhistory
 .RData
 .Ruserdata
-Maps
+/Mapping Files
 GIS Files
 /Bait Records/*.pdf
 /Bait Records/*.jpg
 /Bait Records/*.png
+/Record Sheets
+/Rodent Traps/*.pdf
+/Rodent Traps/*.kml
