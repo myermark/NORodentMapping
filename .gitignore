@@ -2,8 +2,12 @@
 .Rhistory
 .RData
 .Ruserdata
-Maps
+Mapping Files
 GIS Files
-/Bait Records/*.pdf
-/Bait Records/*.jpg
-/Bait Records/*.png
+Bait Records/*.pdf
+Bait Records/*.jpg
+Bait Records/*.png
+Record Sheets
+Rodent Traps/*.pdf
+Rodent Traps/*.kml
+ACPEdits_Ghersi et al_rat demography_for co-authors-JEC.docx
