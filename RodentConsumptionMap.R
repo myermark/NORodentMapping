@@ -134,9 +134,9 @@ dev.off()
 
 #Cumulative consumption - number of hits
 tiff(filename = "./Rodent Baits/Maps/Ware_Cumulative_050620.tiff", height = 8, width = 9, units = "in", res = 120, compression = "lzw", type = "cairo")
-map + geom_point(data = filter(ware[order(ware$numHits),], numHits >0), pch=19, size = 6, alpha = 0.5, stroke = 1, aes(x=Long, y= Lat, col = factor(numHits, levels = c(1,2))))  + 
+map + geom_point(data = filter(ware[order(ware$numHits),], numHits >0), pch=19, size = 6, alpha = 0.5, stroke = 1, aes(x=Long, y= Lat, col = factor(numHits, levels = c(1,2,3))))  + 
   geom_point(data = ware, pch = 20, col ="black", size = 0.6, aes(x=Long, y=Lat)) +
-  scale_colour_manual(values = c("green", "yellow")) +
+  scale_colour_manual(values = c("green", "yellow", "orange")) +
   guides() +
   labs(x = "Longitude", y = "Latitude", colour = "Cumulative Weeks\nBait Consumption") + 
   ggtitle("Warehouse/CBD Rodent Surveillance 5/06/20") +
